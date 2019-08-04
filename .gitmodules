@@ -1,0 +1,3 @@
+[submodule "tyrant/test262"]
+	path = tyrant/test262
+	url = https://github.com/tc39/test262.git
