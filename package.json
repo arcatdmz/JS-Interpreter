@@ -24,12 +24,14 @@
     "build-global": "webpack --colors --config webpack.config.js",
     "build-with-acorn": "webpack --colors --config webpack.with-acorn.config.js",
     "build-demo-browser": "tsc --project tsconfig.demo-browser.json",
-    "build-demo-nodejs": "tsc --project tsconfig.demo-nodejs.json"
+    "build-demo-nodejs": "tsc --project tsconfig.demo-nodejs.json",
+    "test": "node ./tyrant/pretest.js && js-interpreter-tyrant -drs --progress --hostPath ./tyrant/run.js"
   },
   "dependencies": {
     "@types/estree": "0.0.37"
   },
   "devDependencies": {
+    "@code-dot-org/js-interpreter-tyrant": "^0.2.2",
     "@types/acorn": "^4.0.2",
     "@types/node": "^8.0.20",
     "@types/requirejs": "^2.1.30",
