@@ -524,7 +524,9 @@ declare module Interpreter {
         parse(code: string, options?: any): ESTree.Program;
     }
     interface NodeConstructor {
-        new (): ESTree.BaseNode;
+        new (parser: {
+            options: Object;
+        }): ESTree.BaseNode;
     }
     interface NativeFunction extends Function {
         id?: number;

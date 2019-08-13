@@ -1962,7 +1962,7 @@ var Interpreter =
             // Normally 'this' will be specified as the object component (o.x).
             // Sometimes 'this' is explicitly provided (o).
             var funcThis = Array.isArray(left) ? left[0] : left;
-            var node = new this.nodeConstructor();
+            var node = new this.nodeConstructor({ options: {} });
             node['type'] = 'CallExpression';
             var state = new Interpreter.MyState(node, this.stateStack[this.stateStack.length - 1].scope);
             state.doneCallee_ = true;
@@ -1985,7 +1985,7 @@ var Interpreter =
             // Normally 'this' will be specified as the object component (o.x).
             // Sometimes 'this' is implicitly the global object (x).
             var funcThis = Array.isArray(left) ? left[0] : this.global;
-            var node = new this.nodeConstructor();
+            var node = new this.nodeConstructor({ options: {} });
             node['type'] = 'CallExpression';
             var state = new Interpreter.MyState(node, this.stateStack[this.stateStack.length - 1].scope);
             state.doneCallee_ = true;
@@ -2335,7 +2335,7 @@ var Interpreter =
                             // Acorn threw a SyntaxError.  Rethrow as a trappable error.
                             this.throwException(this.SYNTAX_ERROR, 'Invalid code: ' + e.message);
                         }
-                        var evalNode = new this.nodeConstructor();
+                        var evalNode = new this.nodeConstructor({ options: {} });
                         evalNode['type'] = 'EvalProgram_';
                         evalNode['body'] = ast['body'];
                         this.stripLocations_(evalNode, node['start'], node['end']);
