@@ -7,16 +7,24 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
+			"name": "Launch Test",
 			"program": "${workspaceFolder}\\node_modules\\@code-dot-org\\js-interpreter-tyrant\\bin\\run.js",
 			"args": ["-drs", "--progress",  "--hostPath", "./tyrant/run.js"]
 		},
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program2",
+			"name": "Launch Test2",
 			"program": "${workspaceFolder}\\tyrant\\run.js",
 			"args": ["./tyrant\\test262\\test\\language\\literals\\boolean\\S7.8.2_A1_T1.js"]
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch demo",
+			"program": "${workspaceFolder}\\demos\\nodejs\\index.js",
+			"preLaunchTask": "build-demo-nodejs",
+			"sourceMaps": true
 		}
 	]
 }

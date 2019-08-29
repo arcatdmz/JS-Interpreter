@@ -5,7 +5,8 @@
     "declaration": true,
     "target": "es5",
     "outDir": "dist",
-    "types": ["estree", "node"]
+    "types": ["estree", "node"],
+    "lib": ["es6", "dom"]
   },
   "files": ["./lib/interpreter.ts"]
 }

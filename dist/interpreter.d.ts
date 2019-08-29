@@ -48,6 +48,10 @@ declare class Interpreter {
     FUNCTION_PROTO: Interpreter.MyObject;
     ARRAY: Interpreter.MyObject;
     ARRAY_PROTO: Interpreter.MyObject;
+    MAP: Interpreter.MyObject;
+    MAP_PROTO: Interpreter.MyObject;
+    SET: Interpreter.MyObject;
+    SET_PROTO: Interpreter.MyObject;
     REGEXP: Interpreter.MyObject;
     REGEXP_PROTO: Interpreter.MyObject;
     ERROR: Interpreter.MyObject;
@@ -145,6 +149,16 @@ declare class Interpreter {
      * @param {!Interpreter.MyObject} scope Global scope.
      */
     initArray(scope: Interpreter.MyObject): void;
+    /**
+     * Initialize the Map class.
+     * @param {!Interpreter.MyObject} scope Global scope.
+     */
+    initMap(scope: Interpreter.MyObject): void;
+    /**
+     * Initialize the Set class.
+     * @param {!Interpreter.MyObject} scope Global scope.
+     */
+    initSet(scope: Interpreter.MyObject): void;
     /**
      * Initialize the String class.
      * @param {!Interpreter.MyObject} scope Global scope.
@@ -434,6 +448,7 @@ declare class Interpreter {
     private stepEvalProgram_(stack, state, node);
     private stepExpressionStatement(stack, state, node);
     private stepForInStatement(stack, state, node);
+    private stepForOfStatement(stack, state, node);
     private stepForStatement(stack, state, node);
     private stepFunctionDeclaration(stack, state, node);
     private stepFunctionExpression(stack, state, node);

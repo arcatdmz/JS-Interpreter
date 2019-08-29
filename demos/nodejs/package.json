@@ -9,11 +9,11 @@
   "author": "Jun Kato <i@junkato.jp> (https://junkato.jp)",
   "license": "ISC",
   "devDependencies": {
-    "@types/acorn": "^4.0.2",
+    "@types/acorn": "^4.0.3",
     "@types/node": "^8.0.20"
   },
   "dependencies": {
-    "acorn": "^0.4.2",
+    "acorn": "^5.7.3",
     "JS-Interpreter": "git+https://github.com/arcatdmz/JS-Interpreter.git"
   }
 }

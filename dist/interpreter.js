@@ -200,6 +200,8 @@
             scope.proto = this.OBJECT_PROTO;
             this.setProperty(scope, 'constructor', this.OBJECT);
             this.initArray(scope);
+            this.initMap(scope);
+            this.initSet(scope);
             this.initString(scope);
             this.initBoolean(scope);
             this.initNumber(scope);
@@ -696,6 +698,220 @@
         };
         ;
         /**
+         * Initialize the Map class.
+         * @param {!Interpreter.MyObject} scope Global scope.
+         */
+        Interpreter.prototype.initMap = function (scope) {
+            var thisInterpreter = this;
+            var getInt = function (obj, def) {
+                // Return an integer, or the default.
+                var n = obj ? Math.floor(obj) : def;
+                if (isNaN(n)) {
+                    n = def;
+                }
+                return n;
+            };
+            var wrapper;
+            // Map constructor.
+            wrapper = function (var_args) {
+                if (thisInterpreter.calledWithNew()) {
+                    // Called as new Map().
+                    var newMap = this;
+                }
+                else {
+                    // Called as Map().
+                    var newMap = thisInterpreter.createObjectProto(thisInterpreter.MAP_PROTO);
+                }
+                if (2 <= arguments.length) {
+                    thisInterpreter.throwException(thisInterpreter.SYNTAX_ERROR, 'Invalid arguments for Map');
+                }
+                var entries = [];
+                if (arguments.length === 1) {
+                    var first = arguments[0];
+                    if (first instanceof Interpreter.MyObject && first.class === 'Array') {
+                        for (var _i = 0, _a = arguments[0].properties; _i < _a.length; _i++) {
+                            var pair = _a[_i];
+                            var key = pair.properties[0];
+                            var value = pair.properties[1];
+                            entries.push({ key: key, value: value });
+                        }
+                    }
+                }
+                newMap.properties["[[Entries]]"] = entries;
+                newMap.properties.size = entries.length;
+                return newMap;
+            };
+            this.MAP = this.createNativeFunction(wrapper, true);
+            this.MAP_PROTO = this.MAP.properties['prototype'];
+            this.setProperty(scope, 'Map', this.MAP);
+            // No Static methods on Map.
+            // Instance methods on Map.
+            wrapper = function () {
+                this.properties["[[Entries]]"] = [];
+                this.properties.size = 0;
+                return undefined;
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'clear', wrapper);
+            wrapper = function (keyToDelete) {
+                var i = 0;
+                for (var _i = 0, _a = this.properties["[[Entries]]"]; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    if (obj.key === keyToDelete) {
+                        this.properties["[[Entries]]"].splice(i, 1);
+                        this.properties.size = this.properties["[[Entries]]"].length;
+                        return true;
+                    }
+                    ++i;
+                }
+                return false;
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'delete', wrapper);
+            wrapper = function (keyToFind) {
+                for (var _i = 0, _a = this.properties["[[Entries]]"]; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    if (obj.key === keyToFind) {
+                        return obj.value;
+                    }
+                }
+                return undefined;
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'get', wrapper);
+            wrapper = function (key) {
+                for (var _i = 0, _a = this.properties["[[Entries]]"]; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    if (obj.key === key) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'has', wrapper);
+            wrapper = function (key, value) {
+                this.properties["[[Entries]]"].push({ key: key, value: value });
+                this.properties.size = this.properties["[[Entries]]"].length;
+                return this;
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'set', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return new Map(entries.map(function (kv) { return [kv.key, kv.value]; }))[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'entries', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return new Map(entries.map(function (kv) { return kv.key; }))[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'keys', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return new Map(entries.map(function (kv) { return kv.value; }))[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.MAP, 'values', wrapper);
+            this.polyfills_.push("Object.defineProperty(Map.prototype, 'forEach',", "{configurable: true, writable: true, value:", "function(callback, thisArg) {", "if (!this || typeof callback !== 'function') throw TypeError();", "var T, i;", "var O = Object(this['[[Entries]]']);", "var len = O.size >>> 0;", "if (arguments.length > 1) T = thisArg;", "i = 0;", "while (i < len) {", "if (i in O) callback.call(T, O.value, O.key, O);", "i++;", "}", "}", "});");
+        };
+        ;
+        /**
+         * Initialize the Set class.
+         * @param {!Interpreter.MyObject} scope Global scope.
+         */
+        Interpreter.prototype.initSet = function (scope) {
+            var thisInterpreter = this;
+            var getInt = function (obj, def) {
+                // Return an integer, or the default.
+                var n = obj ? Math.floor(obj) : def;
+                if (isNaN(n)) {
+                    n = def;
+                }
+                return n;
+            };
+            var wrapper;
+            // Set constructor.
+            wrapper = function (var_args) {
+                if (thisInterpreter.calledWithNew()) {
+                    // Called as new Set().
+                    var newSet = this;
+                }
+                else {
+                    // Called as Set().
+                    var newSet = thisInterpreter.createObjectProto(thisInterpreter.SET_PROTO);
+                }
+                if (2 <= arguments.length) {
+                    thisInterpreter.throwException(thisInterpreter.SYNTAX_ERROR, 'Invalid arguments for Set');
+                }
+                var entries = [];
+                if (arguments.length === 1) {
+                    var first = arguments[0];
+                    if (first instanceof Interpreter.MyObject && first.class === 'Array') {
+                        for (var _i = 0, _a = arguments[0].properties; _i < _a.length; _i++) {
+                            var value = _a[_i];
+                            entries.push({ value: value });
+                        }
+                    }
+                }
+                newSet.properties["[[Entries]]"] = entries;
+                newSet.properties["size"] = entries.length;
+                return newSet;
+            };
+            this.SET = this.createNativeFunction(wrapper, true);
+            this.SET_PROTO = this.SET.properties['prototype'];
+            this.setProperty(scope, 'Set', this.SET);
+            // No Static methods on Set.
+            // Instance methods on Set.
+            wrapper = function () {
+                this.properties["[[Entries]]"] = [];
+                this.properties.size = 0;
+                return undefined;
+            };
+            this.setNativeFunctionPrototype(this.SET, 'clear', wrapper);
+            wrapper = function (valueToDelete) {
+                var i = 0;
+                for (var _i = 0, _a = this.properties["[[Entries]]"]; _i < _a.length; _i++) {
+                    var v = _a[_i];
+                    if (v === valueToDelete) {
+                        this.properties["[[Entries]]"].splice(i, 1);
+                        this.properties.size = this.properties["[[Entries]]"].length;
+                        return true;
+                    }
+                    ++i;
+                }
+                return false;
+            };
+            this.setNativeFunctionPrototype(this.SET, 'delete', wrapper);
+            wrapper = function (value) {
+                this.properties["[[Entries]]"].push({ value: value });
+                this.properties.size = this.properties["[[Entries]]"].length;
+                return this;
+            };
+            this.setNativeFunctionPrototype(this.SET, 'add', wrapper);
+            wrapper = function (value) {
+                for (var _i = 0, _a = this.properties["[[Entries]]"]; _i < _a.length; _i++) {
+                    var v = _a[_i];
+                    if (v === value) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            this.setNativeFunctionPrototype(this.SET, 'has', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return new Map(entries.map(function (kv) { return [kv.value, kv.value]; }))[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.SET, 'entries', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return entries.map(function (kv) { return kv.value; })[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.SET, 'keys', wrapper);
+            wrapper = function () {
+                var entries = this.properties["[[Entries]]"];
+                return entries.map(function (kv) { return kv.value; })[Symbol.iterator]();
+            };
+            this.setNativeFunctionPrototype(this.SET, 'values', wrapper);
+            this.polyfills_.push("Object.defineProperty(Map.prototype, 'forEach',", "{configurable: true, writable: true, value:", "function(callback, thisArg) {", "if (!this || typeof callback !== 'function') throw TypeError();", "var T, i;", "var O = Object(this['[[Entries]]']);", "var len = O.size >>> 0;", "if (arguments.length > 1) T = thisArg;", "i = 0;", "while (i < len) {", "if (i in O) callback.call(T, O.value, O.key, O);", "i++;", "}", "}", "});");
+        };
+        ;
+        /**
          * Initialize the String class.
          * @param {!Interpreter.MyObject} scope Global scope.
          */
@@ -1162,6 +1378,14 @@
             if (this.isa(obj, this.ARRAY)) {
                 this.setProperty(obj, 'length', 0, { configurable: false, enumerable: false, writable: true });
                 obj.class = 'Array';
+            }
+            if (this.isa(obj, this.MAP)) {
+                this.setProperty(obj, 'size', 0, { configurable: false, enumerable: false, writable: true });
+                obj.class = 'Map';
+            }
+            if (this.isa(obj, this.SET)) {
+                this.setProperty(obj, 'size', 0, { configurable: false, enumerable: false, writable: true });
+                obj.class = 'Set';
             }
             if (this.isa(obj, this.ERROR)) {
                 obj.class = 'Error';
@@ -2549,6 +2773,124 @@
             }
         };
         ;
+        Interpreter.prototype.stepForOfStatement = function (stack, state, node) {
+            // First, initialize a variable if exists.  Only do so once, ever.
+            if (!state.doneInit_) {
+                state.doneInit_ = true;
+                if (node['left']['declarations'] &&
+                    node['left']['declarations'][0]['init']) {
+                    if (state.scope.strict) {
+                        this.throwException(this.SYNTAX_ERROR, 'for-of loop variable declaration may not have an initializer.');
+                    }
+                    // Variable initialization: for (var x = 4 in y)
+                    return new Interpreter.MyState(node['left'], state.scope);
+                }
+            }
+            // Second, look up the object.  Only do so once, ever.
+            if (!state.doneObject_) {
+                state.doneObject_ = true;
+                if (!state.variable_) {
+                    state.variable_ = state.value;
+                }
+                return new Interpreter.MyState(node['right'], state.scope);
+            }
+            if (!state.isLoop) {
+                // First iteration.
+                state.isLoop = true;
+                state.object_ = state.value;
+                state.visited_ = Object.create(null);
+            }
+            // Third, find the property name for this iteration.
+            if (state.name_ === undefined) {
+                done: do {
+                    if (state.object_) {
+                        var isIterable = function (obj) { return obj != null && typeof obj[Symbol.iterator] === 'function'; };
+                        if (!state.itr_) {
+                            if (isIterable(state.object_)) {
+                                state.itr_ = state.object_[Symbol.iterator]();
+                            }
+                            else if (state.object_.isObject) {
+                                if (state.object_.class === 'Array') {
+                                    state.itr_ = Array.from(state.object_.properties);
+                                    state.itr_ = state.itr_.filter(function (v) { return v !== 'length'; });
+                                    state.itr_ = state.itr_[Symbol.iterator]();
+                                }
+                                else if (state.object_.class === 'Map') {
+                                    state.itr_ = state.object_.properties["[[Entries]]"];
+                                    state.itr_ = new Map(state.itr_.map(function (kv) { return [kv.key, kv.value]; }));
+                                    state.itr_ = state.itr_[Symbol.iterator]();
+                                }
+                                else if (state.object_.class === 'Set') {
+                                    state.itr_ = state.object_.properties["[[Entries]]"];
+                                    state.itr_ = state.itr_.map(function (kv) { return kv.value; });
+                                    state.itr_ = state.itr_[Symbol.iterator]();
+                                }
+                            }
+                        }
+                        var value_1 = void 0, next = void 0;
+                        if (isIterable(state.itr_)) {
+                            do {
+                                next = state.itr_.next();
+                                value_1 = next.value;
+                            } while (value_1 && state.visited_[value_1] && !next.done);
+                            if (value_1) {
+                                state.visited_[value_1] = true;
+                                if (!next.done) {
+                                    state.name_ = value_1;
+                                    break done;
+                                }
+                            }
+                        }
+                    }
+                    state.object_ = this.getPrototype(state.object_);
+                    state.itr_ = null;
+                } while (state.object_ !== null);
+                if (state.object_ === null) {
+                    // Done, exit loop.
+                    stack.pop();
+                    return;
+                }
+            }
+            // Fourth, find the variable
+            if (!state.doneVariable_) {
+                state.doneVariable_ = true;
+                var left = node['left'];
+                if (left['type'] === 'VariableDeclaration') {
+                    // Inline variable declaration: for (var x in y)
+                    state.variable_ =
+                        [Interpreter.SCOPE_REFERENCE, left['declarations'][0]['id']['name']];
+                }
+                else {
+                    // Arbitrary left side: for (foo().bar in y)
+                    state.variable_ = null;
+                    var nextState = new Interpreter.MyState(left, state.scope);
+                    nextState.components = true;
+                    return nextState;
+                }
+            }
+            if (!state.variable_) {
+                state.variable_ = state.value;
+            }
+            // Fifth, set the variable.
+            if (!state.doneSetter_) {
+                state.doneSetter_ = true;
+                var value = state.name_;
+                var setter = this.setValue(state.variable_, value);
+                if (setter) {
+                    return this.createSetter_(setter, state.variable_, value);
+                }
+            }
+            // Next step will be step three.
+            state.name_ = undefined;
+            // Reevaluate the variable since it could be a setter on the global object.
+            state.doneVariable_ = false;
+            state.doneSetter_ = false;
+            // Sixth and finally, execute the body if there was one.  this.
+            if (node['body']) {
+                return new Interpreter.MyState(node['body'], state.scope);
+            }
+        };
+        ;
         Interpreter.prototype.stepForStatement = function (stack, state, node) {
             var mode = state.mode_ || 0;
             if (mode === 0) {
@@ -3056,7 +3398,7 @@
          * @const {!Object} Configuration used for all Acorn parsing.
          */
         Interpreter.PARSE_OPTIONS = {
-            ecmaVersion: 5
+            ecmaVersion: 6
         };
         /**
          * Property descriptor of readonly properties.
