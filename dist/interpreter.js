@@ -1,14 +1,14 @@
-/// <reference path="./_estree.d.ts" />
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports"], factory);
+        define(["require", "exports", "acorn"], factory);
     }
 })(function (require, exports) {
     "use strict";
+    var acorn = require("acorn");
     /**
      * @license
      * JavaScript Interpreter
@@ -40,7 +40,7 @@
      *     global scope object.
      * @constructor
      */
-    var Interpreter = (function () {
+    var Interpreter = /** @class */ (function () {
         function Interpreter(code, opt_initFunc) {
             if (typeof code === 'string') {
                 code = Interpreter.acorn.parse(code, Interpreter.PARSE_OPTIONS);
@@ -171,7 +171,8 @@
          *     false if no more instructions.
          */
         Interpreter.prototype.run = function () {
-            while (!this.paused_ && this.step()) { }
+            while (!this.paused_ && this.step()) {
+            }
             return this.paused_;
         };
         ;
@@ -212,7 +213,9 @@
             this.initJSON(scope);
             // Initialize global functions.
             var thisInterpreter = this;
-            var func = this.createNativeFunction(function (x) { throw EvalError("Can't happen"); }, false);
+            var func = this.createNativeFunction(function (x) {
+                throw EvalError("Can't happen");
+            }, false);
             func.eval = true;
             this.setProperty(scope, 'eval', func);
             this.setProperty(scope, 'parseInt', this.createNativeFunction(parseInt, false));
@@ -306,7 +309,8 @@
             this.FUNCTION.nativeFunc = wrapper;
             // Configure Function.prototype.
             this.setProperty(this.FUNCTION_PROTO, 'constructor', this.FUNCTION, Interpreter.NONENUMERABLE_DESCRIPTOR);
-            this.FUNCTION_PROTO.nativeFunc = function () { };
+            this.FUNCTION_PROTO.nativeFunc = function () {
+            };
             this.FUNCTION_PROTO.nativeFunc.id = this.functionCounter_++;
             this.setProperty(this.FUNCTION_PROTO, 'length', 0, Interpreter.READONLY_DESCRIPTOR);
             var boxThis = function (value) {
@@ -1489,7 +1493,7 @@
                 return this.createNativeFunction(wrapper, undefined);
             }
             var pseudoObj;
-            if (Array.isArray(nativeObj)) {
+            if (Array.isArray(nativeObj)) { // Array.
                 pseudoObj = this.createObjectProto(this.ARRAY_PROTO);
                 for (var i = 0; i < nativeObj.length; i++) {
                     if (i in nativeObj) {
@@ -1497,7 +1501,7 @@
                     }
                 }
             }
-            else {
+            else { // Object.
                 pseudoObj = this.createObjectProto(this.OBJECT_PROTO);
                 for (var key in nativeObj) {
                     this.setProperty(pseudoObj, key, this.nativeToPseudo(nativeObj[key]));
@@ -1521,7 +1525,7 @@
                 pseudoObj === null || pseudoObj === undefined) {
                 return pseudoObj;
             }
-            if (this.isa(pseudoObj, this.REGEXP)) {
+            if (this.isa(pseudoObj, this.REGEXP)) { // Regular expression.
                 return pseudoObj.data;
             }
             var cycles = opt_cycles || {
@@ -1534,7 +1538,7 @@
             }
             cycles.pseudo.push(pseudoObj);
             var nativeObj;
-            if (this.isa(pseudoObj, this.ARRAY)) {
+            if (this.isa(pseudoObj, this.ARRAY)) { // Array.
                 nativeObj = [];
                 cycles.native.push(nativeObj);
                 var length = this.getProperty(pseudoObj, 'length');
@@ -1545,7 +1549,7 @@
                     }
                 }
             }
-            else {
+            else { // Object.
                 nativeObj = {};
                 cycles.native.push(nativeObj);
                 var val;
@@ -2205,7 +2209,7 @@
                         // Clear the getter flag and call the getter function.
                         leftValue.isGetter = false;
                         state.doneGetter_ = true;
-                        var func = (leftValue);
+                        var func = /** @type {!Interpreter.Object} */ (leftValue);
                         return this.createGetter_(func, state.leftReference_);
                     }
                 }
@@ -2531,11 +2535,11 @@
                 }
                 else {
                     /* A child of a function is a function but is not callable.  For example:
-                    var F = function() {};
-                    F.prototype = escape;
-                    var f = new F();
-                    f();
-                    */
+          var F = function() {};
+          F.prototype = escape;
+          var f = new F();
+          f();
+          */
                     this.throwException(this.TYPE_ERROR, func.class + ' is not a function');
                 }
             }
@@ -2629,10 +2633,10 @@
                 state.test_ = true;
                 return new Interpreter.MyState(node['test'], state.scope);
             }
-            if (!state.value) {
+            if (!state.value) { // Done, exit loop.
                 stack.pop();
             }
-            else if (node['body']) {
+            else if (node['body']) { // Execute the body.
                 state.test_ = false;
                 state.isLoop = true;
                 return new Interpreter.MyState(node['body'], state.scope);
@@ -2911,7 +2915,7 @@
                     // Done, exit loop.
                     stack.pop();
                 }
-                else {
+                else { // Execute the body.
                     state.isLoop = true;
                     return new Interpreter.MyState(node['body'], state.scope);
                 }
@@ -2949,7 +2953,7 @@
                 while (!this.hasProperty(scope, node['name'])) {
                     scope = scope.parentScope;
                 }
-                var func = (value);
+                var func = /** @type {!Interpreter.Object} */ (value);
                 return this.createGetter_(func, this.global);
             }
             stack[stack.length - 1].value = value;
@@ -3035,7 +3039,7 @@
                 if (value && typeof value === 'object' && value.isGetter) {
                     // Clear the getter flag and call the getter function.
                     value.isGetter = false;
-                    var func = (value);
+                    var func = /** @type {!Interpreter.Object} */ (value);
                     return this.createGetter_(func, state.object_);
                 }
                 stack[stack.length - 1].value = value;
@@ -3317,7 +3321,7 @@
                     // Clear the getter flag and call the getter function.
                     leftValue.isGetter = false;
                     state.doneGetter_ = true;
-                    var func = (leftValue);
+                    var func = /** @type {!Interpreter.Object} */ (leftValue);
                     return this.createGetter_(func, state.leftSide_);
                 }
             }
@@ -3394,6 +3398,7 @@
         Interpreter.prototype.stepWhileStatement = function (stack, state, node) {
             return this.stepDoWhileStatement(stack, state, node);
         };
+        Interpreter.acorn = acorn;
         /**
          * @const {!Object} Configuration used for all Acorn parsing.
          */
@@ -3457,7 +3462,7 @@
          * @param {Interpreter.MyObject} proto Prototype object or null.
          * @constructor
          */
-        var MyObject = (function () {
+        var MyObject = /** @class */ (function () {
             function MyObject(proto) {
                 /** @type {Interpreter.MyObject} */
                 this.proto = null;
@@ -3545,7 +3550,7 @@
                 if (this.data instanceof Date) {
                     return this.data.valueOf(); // Milliseconds.
                 }
-                return (this.data); // Boxed primitive.
+                return /** @type {(boolean|number|string)} */ (this.data); // Boxed primitive.
             };
             return MyObject;
         }());
@@ -3556,7 +3561,7 @@
          * @param {!Interpreter.MyObject} scope Scope object for the state.
          * @constructor
          */
-        var MyState = (function () {
+        var MyState = /** @class */ (function () {
             function MyState(node, scope) {
                 this.node = node;
                 this.scope = scope;

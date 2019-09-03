@@ -1,4 +1,4 @@
-/// <reference path="../lib/_estree.d.ts" />
+import * as ESTree from 'estree';
 /**
  * @license
  * JavaScript Interpreter
@@ -318,7 +318,7 @@ declare class Interpreter {
      * @param {Interpreter.MyValue} name Name of property.
      * @param {!Function} wrapper Function object.
      */
-    private setNativeFunctionPrototype(obj, name, wrapper);
+    private setNativeFunctionPrototype;
     /**
      * Returns the current scope from the stateStack.
      * @return {!Interpreter.MyObject} Current scope dictionary.
@@ -374,7 +374,7 @@ declare class Interpreter {
      * @param {number=} end Ending character of all nodes, or undefined.
      * @private
      */
-    private stripLocations_(node, start, end);
+    private stripLocations_;
     /**
      * Is the current state directly being called with as a construction with 'new'.
      * @return {boolean} True if 'new foo()', false if 'foo()'.
@@ -433,45 +433,45 @@ declare class Interpreter {
      * @private
      */
     createSetter_(func: Interpreter.MyObject, left: Interpreter.MyObject | Array<Interpreter.MyObject>, value: Interpreter.MyValue): Interpreter.MyState;
-    private stepArrayExpression(stack, state, node);
-    private stepAssignmentExpression(stack, state, node);
-    private stepBinaryExpression(stack, state, node);
-    private stepBlockStatement(stack, state, node);
-    private stepBreakStatement(stack, state, node);
-    private stepCallExpression(stack, state, node);
-    private stepCatchClause(stack, state, node);
-    private stepConditionalExpression(stack, state, node);
-    private stepContinueStatement(stack, state, node);
-    private stepDebuggerStatement(stack, state, node);
-    private stepDoWhileStatement(stack, state, node);
-    private stepEmptyStatement(stack, state, node);
-    private stepEvalProgram_(stack, state, node);
-    private stepExpressionStatement(stack, state, node);
-    private stepForInStatement(stack, state, node);
-    private stepForOfStatement(stack, state, node);
-    private stepForStatement(stack, state, node);
-    private stepFunctionDeclaration(stack, state, node);
-    private stepFunctionExpression(stack, state, node);
-    private stepIdentifier(stack, state, node);
-    private stepIfStatement(stack, state, node);
-    private stepLabeledStatement(stack, state, node);
-    private stepLiteral(stack, state, node);
-    private stepLogicalExpression(stack, state, node);
-    private stepMemberExpression(stack, state, node);
-    private stepNewExpression(stack, state, node);
-    private stepObjectExpression(stack, state, node);
-    private stepProgram(stack, state, node);
-    private stepReturnStatement(stack, state, node);
-    private stepSequenceExpression(stack, state, node);
-    private stepSwitchStatement(stack, state, node);
-    private stepThisExpression(stack, state, node);
-    private stepThrowStatement(stack, state, node);
-    private stepTryStatement(stack, state, node);
-    private stepUnaryExpression(stack, state, node);
-    private stepUpdateExpression(stack, state, node);
-    private stepVariableDeclaration(stack, state, node);
-    private stepWithStatement(stack, state, node);
-    private stepWhileStatement(stack, state, node);
+    private stepArrayExpression;
+    private stepAssignmentExpression;
+    private stepBinaryExpression;
+    private stepBlockStatement;
+    private stepBreakStatement;
+    private stepCallExpression;
+    private stepCatchClause;
+    private stepConditionalExpression;
+    private stepContinueStatement;
+    private stepDebuggerStatement;
+    private stepDoWhileStatement;
+    private stepEmptyStatement;
+    private stepEvalProgram_;
+    private stepExpressionStatement;
+    private stepForInStatement;
+    private stepForOfStatement;
+    private stepForStatement;
+    private stepFunctionDeclaration;
+    private stepFunctionExpression;
+    private stepIdentifier;
+    private stepIfStatement;
+    private stepLabeledStatement;
+    private stepLiteral;
+    private stepLogicalExpression;
+    private stepMemberExpression;
+    private stepNewExpression;
+    private stepObjectExpression;
+    private stepProgram;
+    private stepReturnStatement;
+    private stepSequenceExpression;
+    private stepSwitchStatement;
+    private stepThisExpression;
+    private stepThrowStatement;
+    private stepTryStatement;
+    private stepUnaryExpression;
+    private stepUpdateExpression;
+    private stepVariableDeclaration;
+    private stepWithStatement;
+    private stepWhileStatement;
 }
 declare module Interpreter {
     /**

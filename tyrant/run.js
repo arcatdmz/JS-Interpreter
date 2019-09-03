@@ -33,7 +33,6 @@ const buildInterpreter = require('./interpreter-builder.js');
 const Interpreter = require(argv.interpreter
   ? path.resolve(argv.interpreter)
   : '../dist/interpreter');
-Interpreter.acorn = require('../lib/acorn');
 if (argv.forked) {
   process.on('message', code => {
     try {

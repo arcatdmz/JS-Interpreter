@@ -28,11 +28,12 @@
     "test": "node ./tyrant/pretest.js && js-interpreter-tyrant -drs --progress --hostPath ./tyrant/run.js"
   },
   "dependencies": {
+    "acorn": "^5.7.3",
+    "@types/acorn": "^4.0.3",
     "@types/estree": "0.0.37"
   },
   "devDependencies": {
     "@code-dot-org/js-interpreter-tyrant": "^0.2.2",
-    "@types/acorn": "^4.0.2",
     "@types/node": "^8.0.20",
     "@types/requirejs": "^2.1.30",
     "babel-core": "^6.25.0",
