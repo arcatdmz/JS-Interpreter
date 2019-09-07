@@ -28,8 +28,8 @@ function deserialize(json, interpreter) {
     if (value && typeof value === 'object') {
       var data;
       if ((data = value['#'])) {
-       // Object reference: {'#': 42}
-       value = objectList[data];
+        // Object reference: {'#': 42}
+        value = objectList[data];
         if (!value) {
           throw ReferenceError('Object reference not found: ' + data);
         }
@@ -126,11 +126,12 @@ function deserialize(json, interpreter) {
       var names = Object.getOwnPropertyNames(props);
       for (var j = 0; j < names.length; j++) {
         var name = names[j];
-        Object.defineProperty(obj, name,
-            {configurable: nonConfigurable.indexOf(name) === -1,
-             enumerable: nonEnumerable.indexOf(name) === -1,
-             writable: nonWritable.indexOf(name) === -1,
-             value: decodeValue(props[name])});
+        Object.defineProperty(obj, name, {
+          configurable: nonConfigurable.indexOf(name) === -1,
+          enumerable: nonEnumerable.indexOf(name) === -1,
+          writable: nonWritable.indexOf(name) === -1,
+          value: decodeValue(props[name]),
+        });
       }
     }
     // Repopulate arrays.
@@ -157,30 +158,34 @@ function serialize(interpreter) {
       if (ref === -1) {
         throw RangeError('Object not found in table.');
       }
-      return {'#': ref};
+      return { '#': ref };
     }
     if (value === undefined) {
-      return {'Value': 'undefined'};
+      return { Value: 'undefined' };
     }
     if (typeof value === 'number') {
       if (value === Infinity) {
-        return {'Number': 'Infinity'};
+        return { Number: 'Infinity' };
       } else if (value === -Infinity) {
-        return {'Number': '-Infinity'};
+        return { Number: '-Infinity' };
       } else if (isNaN(value)) {
-        return {'Number': 'NaN'};
+        return { Number: 'NaN' };
       } else if (1 / value === -Infinity) {
-        return {'Number': '-0'};
+        return { Number: '-0' };
       }
     }
     return value;
   }
   // Shallow-copy all properties of interest onto a root object.
   var properties = [
-    'OBJECT', 'OBJECT_PROTO',
-    'FUNCTION', 'FUNCTION_PROTO',
-    'ARRAY', 'ARRAY_PROTO',
-    'REGEXP', 'REGEXP_PROTO',
+    'OBJECT',
+    'OBJECT_PROTO',
+    'FUNCTION',
+    'FUNCTION_PROTO',
+    'ARRAY',
+    'ARRAY_PROTO',
+    'REGEXP',
+    'REGEXP_PROTO',
     'BOOLEAN',
     'DATE',
     'NUMBER',
@@ -193,7 +198,7 @@ function serialize(interpreter) {
     'TYPE_ERROR',
     'URI_ERROR',
     'global',
-    'stateStack'
+    'stateStack',
   ];
   var root = Object.create(null);
   for (var i = 0; i < properties.length; i++) {
@@ -228,23 +233,23 @@ function serialize(interpreter) {
         if (obj.id === undefined) {
           throw Error('Native function has no ID: ' + obj);
         }
-        continue;  // No need to index properties.
+        continue; // No need to index properties.
       case Array.prototype:
         // Currently we assume that Arrays are not sparse.
         jsonObj['type'] = 'Array';
         if (obj.length) {
           jsonObj['data'] = obj.map(encodeValue);
         }
-        continue;  // No need to index properties.
+        continue; // No need to index properties.
       case Date.prototype:
         jsonObj['type'] = 'Date';
         jsonObj['data'] = obj.toJSON();
-        continue;  // No need to index properties.
+        continue; // No need to index properties.
       case RegExp.prototype:
         jsonObj['type'] = 'RegExp';
         jsonObj['source'] = obj.source;
         jsonObj['flags'] = obj.flags;
-        continue;  // No need to index properties.
+        continue; // No need to index properties.
       case Interpreter.Object.prototype:
         jsonObj['type'] = 'PseudoObject';
         break;
@@ -299,7 +304,8 @@ function objectHunt_(node, objectList) {
       return;
     }
     objectList.push(node);
-    if (typeof node === 'object') {  // Recurse.
+    if (typeof node === 'object') {
+      // Recurse.
       var names = Object.getOwnPropertyNames(node);
       for (var i = 0; i < names.length; i++) {
         objectHunt_(node[names[i]], objectList);

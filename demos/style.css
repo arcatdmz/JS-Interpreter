@@ -5,7 +5,9 @@ body {
 a:hover {
   color: red;
 }
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: normal;
 }
 #code {
