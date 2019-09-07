@@ -30,9 +30,7 @@ const argv = yargs
   .describe('forked', 'run this as a forked process').argv;
 
 const buildInterpreter = require('./interpreter-builder.js');
-const Interpreter = require(argv.interpreter
-  ? path.resolve(argv.interpreter)
-  : '../dist/interpreter');
+const { Interpreter } = require(argv.interpreter ? path.resolve(argv.interpreter) : '../dist/main');
 if (argv.forked) {
   process.on('message', code => {
     try {

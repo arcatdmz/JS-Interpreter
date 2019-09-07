@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "module": "umd",
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
-    "target": "es5",
-    "outDir": "dist",
-    "types": ["estree", "node"],
-    "lib": ["es6", "dom"]
+    "outDir": "dist"
   },
-  "files": ["./lib/interpreter.ts"]
+  "include": ["src/**/*"]
 }

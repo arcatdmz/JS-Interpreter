@@ -1,5 +1,4 @@
-JS-Interpreter
-==============
+# JS-Interpreter
 
 A sandboxed JavaScript interpreter written in TypeScript, packed with `Webpack` or `tsc` for use with Node.js or within a browser (either loaded [statically](https://junkato.jp/JS-Interpreter/) or [dynamically](https://junkato.jp/JS-Interpreter/?required)). Execute arbitrary JavaScript code line by line in isolation and safety.
 
@@ -9,7 +8,7 @@ There are several library files that serve different use cases. See below for mo
 
 - `dist/interpreter.js` ... packed with `tsc` (`npm run build`) and can be loaded from Node.js or a browser with RequireJS. `acorn` needs to be loaded separately.
 - `dist/interpreter.d.ts` ... TypeScript type definition
-- `dist/acorn_interpreter.js` ... packed with `Webpack` (`npm run build-with-acorn`) as a library and  can be loaded with a `<script>` tag from a browser. `acorn` is bundled.
+- `dist/acorn_interpreter.js` ... packed with `Webpack` (`npm run build-with-acorn`) as a library and can be loaded with a `<script>` tag from a browser. `acorn` is bundled.
 - `dist/interpreter.global.js` ... packed with `Webpack` (`npm run build-global`) as a library and can be loaded with a `<script>` tag from a browser. `acorn` needs to be loaded separately.
 
 Live demo:
@@ -19,7 +18,7 @@ More demos:
 [https://junkato.jp/JS-Interpreter/demos](https://junkato.jp/JS-Interpreter/demos)
 
 Documentation:
-This `README` file ... or the original documentation at 
+This `README` file ... or the original documentation at
 [https://neil.fraser.name/software/JS-Interpreter/docs.html](https://neil.fraser.name/software/JS-Interpreter/docs.html)
 
 ## Node.js Basic Usage
@@ -39,7 +38,7 @@ import Interpreter = require('JS-Interpreter');
 Interpreter.acorn = acorn;
 
 // Test the interpreter.
-var interpreter = new Interpreter("var a = 1, b = 2; a + b;");
+var interpreter = new Interpreter('var a = 1, b = 2; a + b;');
 interpreter.run();
 console.log('1 + 2 = ' + interpreter.value);
 // shows '1 + 2 = 3' in the console
@@ -52,10 +51,10 @@ Load `dist/acorn_interpreter.js` statically and use the globally-declared `Inter
 ```html
 <script src="https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/dist/acorn_interpreter.js"></script>
 <script>
-var interpreter = new Interpreter("var a = 1, b = 2; a + b;");
-interpreter.run();
-alert('1 + 2 = ' + interpreter.value);
-// shows an alert '1 + 2 = 3'
+  var interpreter = new Interpreter('var a = 1, b = 2; a + b;');
+  interpreter.run();
+  alert('1 + 2 = ' + interpreter.value);
+  // shows an alert '1 + 2 = 3'
 </script>
 ```
 
@@ -67,15 +66,22 @@ No global scope pollution!
 ```html
 <script src="https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/lib/require.js"></script>
 <script>
-requirejs(['https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/lib/acorn.js', 'https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/dist/interpreter.js'], function (acorn, Interpreter) {
-  Interpreter.acorn = acorn; // Manually pass acorn runtime to the Interpreter
-  var interpreter = new Interpreter("var a = 1, b = 2; a + b;");
-  interpreter.run();
-  alert('1 + 2 = ' + interpreter.value);
-  // shows an alert '1 + 2 = 3'
-});
+  requirejs(
+    [
+      'https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/lib/acorn.js',
+      'https://cdn.rawgit.com/arcatdmz/JS-Interpreter/39cbd828/dist/interpreter.js',
+    ],
+    function(acorn, Interpreter) {
+      Interpreter.acorn = acorn; // Manually pass acorn runtime to the Interpreter
+      var interpreter = new Interpreter('var a = 1, b = 2; a + b;');
+      interpreter.run();
+      alert('1 + 2 = ' + interpreter.value);
+      // shows an alert '1 + 2 = 3'
+    }
+  );
 </script>
 ```
 
---------------
+---
+
 (c) 2013-2017 Google Inc. and [Jun Kato](https://junkato.jp)

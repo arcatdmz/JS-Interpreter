@@ -7,45 +7,45 @@
 // cp.spawn('node', [this.hostPath, args]);
 // こうでないと(少なくとも)windowsでは正しく起動できなかった。
 
-var fs = require("fs");
-var path = require("path");
+var fs = require('fs');
+var path = require('path');
 
 function check(filePath) {
   var isExist = false;
   try {
     fs.statSync(filePath);
     isExist = true;
-  } catch(err) {
+  } catch (err) {
     isExist = false;
   }
   return isExist;
 }
-  
+
 function read(filePath) {
   var content = new String();
-  if(check(filePath)) {;
+  if (check(filePath)) {
     content = fs.readFileSync(filePath, 'utf8');
   }
   return content;
-};
+}
 
 function write(filePath, stream) {
   try {
     fs.writeFileSync(filePath, stream);
     return true;
-  } catch(err) {
+  } catch (err) {
     return false;
   }
 }
 
 var filepath = path.resolve(__dirname, '../node_modules/eshost/lib/ConsoleAgent.js');
 var content = read(filepath);
-var toReplaceStr = "cp.spawn(this.hostPath, args);";
-if(content.includes(toReplaceStr)) {
-	var result = content.replace(toReplaceStr, "cp.spawn('node', [this.hostPath, args]);");
-	write(filepath, result);
+var toReplaceStr = 'cp.spawn(this.hostPath, args);';
+if (content.includes(toReplaceStr)) {
+  var result = content.replace(toReplaceStr, "cp.spawn('node', [this.hostPath, args]);");
+  write(filepath, result);
 }
-var dirpath = path.resolve(__dirname, '../node_modules/test262-harness/node_modules/eshost')
-if(check(dirpath)) {
-	fs.renameSync(dirpath, path.resolve(path.dirname(dirpath), 'eshost_unused'));
+var dirpath = path.resolve(__dirname, '../node_modules/test262-harness/node_modules/eshost');
+if (check(dirpath)) {
+  fs.renameSync(dirpath, path.resolve(path.dirname(dirpath), 'eshost_unused'));
 }

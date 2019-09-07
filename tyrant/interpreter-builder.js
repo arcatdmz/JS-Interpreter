@@ -23,10 +23,7 @@ module.exports = function buildInterpreter(Interpreter, code, console) {
   function createVMObject(interpreter) {
     const vm = interpreter.createObject(interpreter.OBJECT);
     function runInContext(source, context) {
-      const interp = new Interpreter(source.toString(), function(
-        interpreter,
-        scope
-      ) {
+      const interp = new Interpreter(source.toString(), function(interpreter, scope) {
         initInterpreterScope(interpreter, scope);
         for (let key in context.properties) {
           interpreter.setProperty(scope, key, context.properties[key]);
